@@ -42,24 +42,13 @@ RUN tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/maven --strip-components=1
 RUN rm -f /tmp/apache-maven.tar.gz 
 RUN ln -s /usr/share/maven/bin/mvn /usr/bin/mvn 
 
-################################################################
-# Install Mongo 
-#################################################################
-RUN apt-get update && \
-    apt-get install -y apt-transport-https
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
-RUN echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-3.6.list
-RUN apt-get update && \
-    apt-get install -y mongodb-org && \
-    mkdir /data && \
-    mkdir /data/db 
-
 #################################################################
 # Install Nodejs
 #################################################################
 RUN  apt-get update \
   && apt-get install -y git \
   libpq-dev \
+  apt-transport-https \
   make \
   python-pip \
   python2.7 \
