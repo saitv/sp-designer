@@ -37,9 +37,9 @@ ARG SHA=bbfa43a4ce4ef96732b896d057f8a613aa229801
 RUN curl -fsSL -o /tmp/apache-maven.tar.gz ${BASE_URL}/apache-maven-${MAVEN_VERSION}-bin.tar.gz 
 RUN echo "${SHA}  /tmp/apache-maven.tar.gz" | sha1sum -c - 
 ## Verified, let's install 
+RUN mkdir -p /usr/share/maven /usr/share/maven/ref 
 RUN tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/maven --strip-components=1 
 RUN rm -f /tmp/apache-maven.tar.gz 
-RUN mkdir -p /usr/share/maven /usr/share/maven/ref 
 RUN ln -s /usr/share/maven/bin/mvn /usr/bin/mvn 
 
 ################################################################
