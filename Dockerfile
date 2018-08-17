@@ -12,6 +12,8 @@ RUN apt-get update && \
     git \
     curl \
     wget \
+    zip \
+    unzip \
     tzdata && \
     echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
     add-apt-repository -y ppa:webupd8team/java && \
@@ -32,10 +34,10 @@ ENV TZ Europe/Copenhagen
 # Install maven
 #################################################################
 
-ARG MAVEN_VERSION=3.5.3
+ARG MAVEN_VERSION=3.5.4
 ARG USER_HOME_DIR="/root"
 ARG BASE_URL=https://www-eu.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/
-ARG SHA=bbfa43a4ce4ef96732b896d057f8a613aa229801
+ARG SHA=22cac91b3557586bb1eba326f2f7727543ff15e3
 
 RUN curl -fsSL -o /tmp/apache-maven.tar.gz ${BASE_URL}/apache-maven-${MAVEN_VERSION}-bin.tar.gz 
 RUN echo "${SHA}  /tmp/apache-maven.tar.gz" | sha1sum -c - 
@@ -100,7 +102,7 @@ RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
   && rm "node-v$NODE_VERSION-linux-$ARCH.tar.xz" SHASUMS256.txt.asc SHASUMS256.txt \
   && ln -s /usr/local/bin/node /usr/local/bin/nodejs
   
-RUN npm install npm@6.0.1 -g  
+RUN npm install npm@6.4.0 -g  
 RUN npm install --unsafe-perm -g @angular/cli findup-sync typescript
 
 
@@ -109,19 +111,15 @@ RUN npm install --unsafe-perm -g @angular/cli findup-sync typescript
 ##################################################
 
 RUN  apt-get update \
-  && apt-get install -y wget \
-  zip \ 
-  unzip \
-  build-essential \
+  && apt-get install -y build-essential \
   ca-certificates \
   gcc \
   apt-transport-https \
   && rm -rf /var/lib/apt/lists/*
 
 # Install deps + add Chrome Stable + purge all the things
-RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-  && echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \
-  && apt-get update -qqy \
-  && apt-get -qqy install google-chrome-unstable \
-  && rm /etc/apt/sources.list.d/google-chrome.list \
-  && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - 
+RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/chrome.list 
+RUN apt-get update -qqy 
+RUN apt-get -qqy install  google-chrome-stable 
+RUN rm -rf /var/lib/apt/lists/* /var/cache/apt/*
